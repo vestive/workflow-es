@@ -1,58 +1,28 @@
-# Workflow ES 
+# MongoDB Persistence provider for Workflow ES
 
-[![Build Status](https://travis-ci.org/danielgerlag/workflow-es.svg?branch=master)](https://travis-ci.org/danielgerlag/workflow-es)
-
-Workflow ES is a workflow / saga library for Node.js (or modern browsers).  It supports pluggable persistence and concurrency providers to allow for multi-node clusters.
+Provides support to persist workflows running on [Workflow ES](https://github.com/danielgerlag/workflow-es) to a MongoDB database.
 
 ## Installing
 
-Install the core npm package "workflow-es"
+Install the npm package "workflow-es-mongodb"
 
 ```
-npm install workflow-es --save
+> npm install workflow-es-mongodb --save
 ```
 
+## Usage
 
-### Guides
+Use the .usePersistence() method when setting up your workflow host.
 
-* [Javascript (ES6)](es2017-guide.md)
-* [Typescript](typescript-guide.md)
-
-
-### Persistence
-
-Since workflows are typically long running processes, they will need to be persisted to storage between steps.
-There are several persistence providers available as seperate npm packages.
-
-* Memory Persistence Provider *(Default provider, for demo and testing purposes)*
-* [MongoDB](https://github.com/danielgerlag/workflow-es/tree/master/providers/workflow-es-mongodb)
-* *(more to come soon...)*
-
-### Multi-node clusters
-
-By default, the WorkflowHost service will run as a single node using the built-in queue and locking providers for a single node configuration.  Should you wish to run a multi-node cluster, you will need to configure an external queueing mechanism and a distributed lock manager to co-ordinate the cluster.  These are the providers that are currently available.
-
-#### Queue Providers
-
-* SingleNodeQueueProvider *(Default built-in provider)*
-* [Azure](https://github.com/danielgerlag/workflow-es/tree/master/providers/workflow-es-azure)
-* RabbitMQ *(coming soon...)*
-
-
-#### Distributed lock managers
-
-* SingleNodeLockProvider *(Default built-in provider)*
-* [Azure](https://github.com/danielgerlag/workflow-es/tree/master/providers/workflow-es-azure)
-* Redis Redlock *(coming soon...)*
-
-
-## Authors
-
-* **Daniel Gerlag** - *Initial work*
-
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-
+```javascript
+const workflow_es = require("workflow-es");
+const workflow_mongo = require("workflow-es-mongodb");
+...
+var config = workflow_es.configureWorkflow();
+let mongoPersistence = new workflow_mongo.MongoDBPersistence("mongodb://127.0.0.1:27017/workflow-node");
+await mongoPersistence.connect;    
+config.usePersistence(mongoPersistence);
+var host = config.getHost();
+...
+await host.start();
+```
