@@ -42,10 +42,11 @@ var MongoDBPersistence = /** @class */ (function () {
         this.retryCount = 0;
         var self = this;
         this.connect = new Promise(function (resolve, reject) {
-            mongodb_1.MongoClient.connect(connectionString, function (err, db) {
+            var options = { useNewUrlParser: true, useUnifiedTopology: true };
+            mongodb_1.MongoClient.connect(connectionString, options, function (err, client) {
                 if (err)
                     reject(err);
-                self.db = db;
+                self.db = client.db();
                 self.workflowCollection = self.db.collection("workflows");
                 self.subscriptionCollection = self.db.collection("subscriptions");
                 self.eventCollection = self.db.collection("events");
