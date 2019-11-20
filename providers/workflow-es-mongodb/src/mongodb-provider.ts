@@ -28,6 +28,10 @@ export class MongoDBPersistence implements IPersistenceProvider {
         });        
     }
 
+    public disconnect(): Promise<any> {
+        return this.client.close();
+    }
+
     public async createNewWorkflow(instance: WorkflowInstance): Promise<string> {
         var self = this;        
         let deferred = new Promise<string>((resolve, reject) => {
