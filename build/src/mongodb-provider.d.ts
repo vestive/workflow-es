@@ -1,12 +1,13 @@
 import { IPersistenceProvider, WorkflowInstance, EventSubscription, Event } from "workflow-es";
 export declare class MongoDBPersistence implements IPersistenceProvider {
     connect: Promise<void>;
-    private db;
+    private client;
     private workflowCollection;
     private subscriptionCollection;
     private eventCollection;
     private retryCount;
     constructor(connectionString: string);
+    disconnect(): Promise<any>;
     createNewWorkflow(instance: WorkflowInstance): Promise<string>;
     persistWorkflow(instance: WorkflowInstance): Promise<void>;
     getWorkflowInstance(workflowId: string): Promise<WorkflowInstance>;

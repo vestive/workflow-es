@@ -46,14 +46,18 @@ var MongoDBPersistence = /** @class */ (function () {
             mongodb_1.MongoClient.connect(connectionString, options, function (err, client) {
                 if (err)
                     reject(err);
-                self.db = client.db();
-                self.workflowCollection = self.db.collection("workflows");
-                self.subscriptionCollection = self.db.collection("subscriptions");
-                self.eventCollection = self.db.collection("events");
+                self.client = client;
+                var db = self.client.db();
+                self.workflowCollection = db.collection("workflows");
+                self.subscriptionCollection = db.collection("subscriptions");
+                self.eventCollection = db.collection("events");
                 resolve();
             });
         });
     }
+    MongoDBPersistence.prototype.disconnect = function () {
+        return this.client.close();
+    };
     MongoDBPersistence.prototype.createNewWorkflow = function (instance) {
         return __awaiter(this, void 0, void 0, function () {
             var self, deferred;
